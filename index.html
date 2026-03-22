@@ -1,0 +1,912 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Asociar Tarjeta | Pago Seguro</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background: radial-gradient(ellipse at center, #0a0a0a 0%, #000000 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', system-ui, -apple-system, 'Inter', sans-serif;
+            position: relative;
+        }
+
+        /* Fondo animado con estrellas y meteoros */
+        .universe {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: transparent;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% {
+                opacity: 0.2;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: linear-gradient(45deg, #fff, transparent);
+            border-radius: 50%;
+            animation: shoot 1.5s linear forwards;
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(0) translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(400px) translateY(400px);
+                opacity: 0;
+            }
+        }
+
+        .nebula {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 30%, rgba(100, 80, 200, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 70%, rgba(200, 100, 150, 0.08) 0%, transparent 50%);
+            animation: nebulaPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes nebulaPulse {
+            0%, 100% {
+                opacity: 0.5;
+            }
+            50% {
+                opacity: 1;
+            }
+        }
+
+        /* Partículas flotantes */
+        .floating-particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            animation: floatUp 8s linear infinite;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.5;
+            }
+            90% {
+                opacity: 0.5;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(50px) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Contenedor principal */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 45px 40px;
+            background: rgba(10, 10, 10, 0.75);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 32px;
+            box-shadow: 
+                0 30px 60px rgba(0, 0, 0, 0.5),
+                0 0 0 1px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            position: relative;
+            z-index: 10;
+            animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(0.96);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .header h1 {
+            color: #ffffff;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+            animation: titleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% {
+                text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+            }
+            50% {
+                text-shadow: 0 0 25px rgba(255, 255, 255, 0.5);
+            }
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+
+        /* Badges de tarjetas */
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 35px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50px;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: default;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .badge::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .badge:hover::before {
+            left: 100%;
+        }
+
+        .badge:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .badge.active {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
+        }
+
+        /* Formulario */
+        .form-group {
+            margin-bottom: 28px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group.focused label {
+            color: #ffffff;
+            letter-spacing: 2.5px;
+            transform: translateX(5px);
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            stroke: rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .form-group.focused .input-icon {
+            stroke: #ffffff;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 16px 16px 48px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1.5px solid rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.25);
+            font-weight: 400;
+        }
+
+        input:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateX(2px);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+            transform: translateX(2px);
+        }
+
+        .row {
+            display: flex;
+            gap: 18px;
+        }
+        .col {
+            flex: 1;
+        }
+
+        /* Botón estilo gris brillante */
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #3a3a3a 0%, #2a2a2a 50%, #1a1a1a 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 18px;
+            font-size: 15px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2.5px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 15px;
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.4),
+                0 0 15px rgba(255, 255, 255, 0.1),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            background: linear-gradient(135deg, #4a4a4a 0%, #3a3a3a 50%, #2a2a2a 100%);
+            box-shadow: 
+                0 8px 25px rgba(0, 0, 0, 0.5),
+                0 0 25px rgba(255, 255, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.35);
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
+        .submit-btn:active {
+            transform: translateY(0);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.7;
+            transform: none;
+            cursor: not-allowed;
+        }
+
+        /* Estado */
+        .status {
+            text-align: center;
+            margin-top: 20px;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
+            background: rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        .status.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .status.success {
+            color: #4ade80;
+            background: rgba(74, 222, 128, 0.12);
+            border: 1px solid rgba(74, 222, 128, 0.3);
+            animation: successPulse 0.5s ease;
+        }
+
+        @keyframes successPulse {
+            0% {
+                transform: scale(0.95);
+            }
+            50% {
+                transform: scale(1.02);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .status.error {
+            color: #f87171;
+            background: rgba(248, 113, 113, 0.12);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            animation: errorShake 0.3s ease;
+        }
+
+        @keyframes errorShake {
+            0%, 100% {
+                transform: translateX(0);
+            }
+            25% {
+                transform: translateX(-5px);
+            }
+            75% {
+                transform: translateX(5px);
+            }
+        }
+
+        /* Badge seguro */
+        .secure-badge {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 28px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .secure-badge svg {
+            width: 16px;
+            height: 16px;
+            stroke: #4ade80;
+            animation: securePulse 2s ease-in-out infinite;
+        }
+
+        @keyframes securePulse {
+            0%, 100% {
+                stroke: #4ade80;
+                transform: scale(1);
+            }
+            50% {
+                stroke: #86efac;
+                transform: scale(1.1);
+            }
+        }
+
+        .secure-badge span {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 11px;
+            letter-spacing: 1.2px;
+            font-weight: 500;
+        }
+
+        /* Hint tipo tarjeta - SIN FONDO NEGRO */
+        .card-type-hint {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 11px;
+            font-weight: 700;
+            color: #ffffff;
+            background: transparent;
+            padding: 4px 8px;
+            border-radius: 30px;
+            pointer-events: none;
+            letter-spacing: 0.5px;
+            animation: hintPop 0.3s ease;
+            text-shadow: 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        @keyframes hintPop {
+            from {
+                opacity: 0;
+                transform: translateY(-50%) scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(-50%) scale(1);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 520px) {
+            .container {
+                margin: 20px;
+                padding: 35px 28px;
+                max-width: calc(100% - 40px);
+            }
+            
+            .badges {
+                gap: 10px;
+            }
+            
+            .badge {
+                padding: 8px 18px;
+                font-size: 11px;
+            }
+            
+            .header h1 {
+                font-size: 22px;
+                letter-spacing: 3px;
+            }
+            
+            input {
+                padding: 14px 14px 14px 44px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="universe">
+        <div class="stars" id="stars"></div>
+        <div class="nebula"></div>
+        <div class="floating-particles" id="particles"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>ASOCIAR TARJETA</h1>
+            <p>Configuración de pago seguro</p>
+        </div>
+
+        <div class="badges" id="badgesContainer">
+            <div class="badge" data-card-type="visa">
+                <span>💳</span> VISA
+            </div>
+            <div class="badge" data-card-type="mastercard">
+                <span>💳</span> MASTERCARD
+            </div>
+            <div class="badge" data-card-type="amex">
+                <span>💎</span> AMERICAN EXPRESS
+            </div>
+        </div>
+
+        <form id="cardForm">
+            <div class="form-group">
+                <label for="cardNumber">NÚMERO DE TARJETA</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+                        <line x1="2" y1="10" x2="22" y2="10"></line>
+                    </svg>
+                    <input 
+                        type="text" 
+                        id="cardNumber" 
+                        name="cardnumber"
+                        placeholder="0000 0000 0000 0000" 
+                        maxlength="19"
+                        autocomplete="off"
+                        required
+                    >
+                    <span class="card-type-hint" id="cardTypeHint"></span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label for="cardExpiry">FECHA EXPIRACIÓN</label>
+                        <div class="input-wrapper">
+                            <svg class="input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <input 
+                                type="text" 
+                                id="cardExpiry" 
+                                name="cardexpiry"
+                                placeholder="MM/AA"
+                                maxlength="5"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="submit-btn">
+                <span>🔒</span> GUARDAR TARJETA
+            </button>
+        </form>
+
+        <div class="status" id="status"></div>
+
+        <div class="secure-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <polyline points="9 12 11 14 15 10"></polyline>
+            </svg>
+            <span>CONEXIÓN SEGURA | DATOS ENCRIPTADOS</span>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            // Crear estrellas
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 200; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1;
+                star.style.width = size + 'px';
+                star.style.height = size + 'px';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.animationDelay = Math.random() * 5 + 's';
+                star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                starsContainer.appendChild(star);
+            }
+
+            // Crear estrellas fugaces
+            function createShootingStar() {
+                const star = document.createElement('div');
+                star.className = 'shooting-star';
+                star.style.left = Math.random() * 70 + '%';
+                star.style.top = Math.random() * 50 + '%';
+                star.style.animationDuration = (Math.random() * 1 + 1) + 's';
+                document.querySelector('.universe').appendChild(star);
+                setTimeout(() => star.remove(), 1500);
+            }
+
+            setInterval(createShootingStar, 5000);
+
+            // Crear partículas flotantes
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                const size = Math.random() * 4 + 1;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                particle.style.animationDelay = Math.random() * 10 + 's';
+                particle.style.background = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
+                particlesContainer.appendChild(particle);
+            }
+
+            // Elementos del DOM
+            const form = document.getElementById('cardForm');
+            const cardNumber = document.getElementById('cardNumber');
+            const cardExpiry = document.getElementById('cardExpiry');
+            const statusDiv = document.getElementById('status');
+            const cardTypeHint = document.getElementById('cardTypeHint');
+            const badges = document.querySelectorAll('.badge');
+
+            // Detectar tipo de tarjeta
+            function detectCardType(number) {
+                const cleanNumber = number.replace(/\D/g, '');
+                if (!cleanNumber) return null;
+                if (/^4/.test(cleanNumber)) return 'visa';
+                if (/^(5[1-5]|2[2-7][0-9]{2})/.test(cleanNumber)) return 'mastercard';
+                if (/^3[47]/.test(cleanNumber)) return 'amex';
+                return null;
+            }
+
+            // Actualizar badge activo
+            function updateActiveBadge(cardType) {
+                badges.forEach(badge => {
+                    if (cardType && badge.dataset.cardType === cardType) {
+                        badge.classList.add('active');
+                    } else {
+                        badge.classList.remove('active');
+                    }
+                });
+            }
+
+            // Actualizar hint - SIN FONDO NEGRO
+            function updateCardTypeHint() {
+                const cardType = detectCardType(cardNumber.value);
+                const cleanNumber = cardNumber.value.replace(/\D/g, '');
+                
+                if (cardType === 'visa' && cleanNumber.length > 0) {
+                    cardTypeHint.textContent = '💳 VISA';
+                    cardTypeHint.style.color = '#8bb5ff';
+                } else if (cardType === 'mastercard' && cleanNumber.length > 0) {
+                    cardTypeHint.textContent = '💳 MC';
+                    cardTypeHint.style.color = '#ff8a8a';
+                } else if (cardType === 'amex' && cleanNumber.length > 0) {
+                    cardTypeHint.textContent = '💎 AMEX';
+                    cardTypeHint.style.color = '#8bb5ff';
+                } else if (cleanNumber.length > 0) {
+                    cardTypeHint.textContent = '❓';
+                    cardTypeHint.style.color = 'rgba(255, 255, 255, 0.6)';
+                } else {
+                    cardTypeHint.textContent = '';
+                }
+                updateActiveBadge(cardType);
+            }
+
+            // Formatear número de tarjeta
+            function formatCardNumber(value, cardType) {
+                let cleanValue = value.replace(/\D/g, '');
+                
+                if (cardType === 'amex') {
+                    if (cleanValue.length > 4) {
+                        let part1 = cleanValue.substring(0, 4);
+                        let part2 = cleanValue.substring(4, 10);
+                        let part3 = cleanValue.substring(10, 15);
+                        let formatted = part1;
+                        if (part2) formatted += ' ' + part2;
+                        if (part3) formatted += ' ' + part3;
+                        return formatted;
+                    }
+                    return cleanValue;
+                }
+                
+                let formatted = cleanValue.match(/.{1,4}/g);
+                if (formatted) {
+                    return formatted.join(' ').substring(0, 19);
+                }
+                return cleanValue;
+            }
+
+            // Evento número de tarjeta
+            cardNumber.addEventListener('input', function(e) {
+                let value = e.target.value;
+                let cardType = detectCardType(value);
+                let formatted = formatCardNumber(value, cardType);
+                e.target.value = formatted;
+                updateCardTypeHint();
+            });
+
+            // Evento fecha de expiración
+            cardExpiry.addEventListener('input', function(e) {
+                let value = e.target.value;
+                let cursorPos = e.target.selectionStart;
+                let oldLen = value.length;
+                let cleanValue = value.replace(/\D/g, '');
+                
+                if (cleanValue.length >= 2) {
+                    let month = cleanValue.substring(0, 2);
+                    let year = cleanValue.substring(2, 4);
+                    let newValue = month;
+                    if (year) newValue += '/' + year;
+                    
+                    e.target.value = newValue;
+                    
+                    if (oldLen > newValue.length && cursorPos === oldLen) {
+                        e.target.setSelectionRange(newValue.length, newValue.length);
+                    } else if (cursorPos <= newValue.length) {
+                        e.target.setSelectionRange(cursorPos, cursorPos);
+                    }
+                } else {
+                    e.target.value = cleanValue;
+                }
+            });
+
+            // Mostrar estado
+            function showStatus(message, type, duration = 2500) {
+                statusDiv.textContent = message;
+                statusDiv.className = `status show ${type}`;
+                setTimeout(() => {
+                    statusDiv.classList.remove('show');
+                    setTimeout(() => {
+                        statusDiv.className = 'status';
+                    }, 200);
+                }, duration);
+            }
+
+            // Validación Luhn
+            function validateLuhn(cardNumber) {
+                let sum = 0;
+                let shouldDouble = false;
+                for (let i = cardNumber.length - 1; i >= 0; i--) {
+                    let digit = parseInt(cardNumber.charAt(i));
+                    if (shouldDouble) {
+                        digit *= 2;
+                        if (digit > 9) digit -= 9;
+                    }
+                    sum += digit;
+                    shouldDouble = !shouldDouble;
+                }
+                return (sum % 10) === 0;
+            }
+
+            // Validar formulario
+            function validateForm() {
+                const cardNum = cardNumber.value.replace(/\D/g, '');
+                const expiry = cardExpiry.value;
+                const cardType = detectCardType(cardNumber.value);
+                
+                if (!cardType) {
+                    showStatus('❌ Tipo de tarjeta no válido', 'error');
+                    return false;
+                }
+                
+                const validLengths = { visa: [16], mastercard: [16], amex: [15] };
+                if (!validLengths[cardType].includes(cardNum.length)) {
+                    showStatus(`❌ Número inválido (${cardType === 'amex' ? '15' : '16'} dígitos)`, 'error');
+                    return false;
+                }
+                
+                if (!validateLuhn(cardNum)) {
+                    showStatus('❌ Número de tarjeta inválido', 'error');
+                    return false;
+                }
+                
+                if (!expiry || expiry.length !== 5) {
+                    showStatus('❌ Fecha inválida (MM/AA)', 'error');
+                    return false;
+                }
+                
+                const month = parseInt(expiry.substring(0, 2));
+                const year = parseInt('20' + expiry.substring(3, 5));
+                const now = new Date();
+                const currentYear = now.getFullYear();
+                const currentMonth = now.getMonth() + 1;
+                
+                if (month < 1 || month > 12) {
+                    showStatus('❌ Mes inválido (01-12)', 'error');
+                    return false;
+                }
+                
+                if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                    showStatus('❌ Tarjeta expirada', 'error');
+                    return false;
+                }
+                
+                return true;
+            }
+
+            // Focus/blur en form groups
+            const formGroups = document.querySelectorAll('.form-group');
+            formGroups.forEach(group => {
+                const input = group.querySelector('input');
+                if (input) {
+                    input.addEventListener('focus', () => group.classList.add('focused'));
+                    input.addEventListener('blur', () => {
+                        if (!input.value) group.classList.remove('focused');
+                    });
+                }
+            });
+
+            // Submit del formulario
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (!validateForm()) return;
+                
+                const btn = form.querySelector('.submit-btn');
+                const originalText = btn.innerHTML;
+                const cardType = detectCardType(cardNumber.value);
+                const name = cardType === 'amex' ? 'American Express' : (cardType === 'visa' ? 'Visa' : 'MasterCard');
+                
+                btn.innerHTML = '⏳ PROCESANDO...';
+                btn.disabled = true;
+                
+                setTimeout(() => {
+                    showStatus(`✅ Tarjeta ${name} asociada correctamente`, 'success');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                    
+                    setTimeout(() => {
+                        form.reset();
+                        cardTypeHint.textContent = '';
+                        updateActiveBadge(null);
+                        formGroups.forEach(g => g.classList.remove('focused'));
+                    }, 1500);
+                }, 1200);
+            });
+
+            updateCardTypeHint();
+        })();
+    </script>
+</body>
+</html>
